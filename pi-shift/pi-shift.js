@@ -34,8 +34,37 @@ var KEYS = { LEFT: 37, RIGHT: 39, S: 83, UP: 38, DOWN: 40 };
 
 var WH = gameWidth / 2;
 
+var leftLast = false;
+var rightLast = false;
+var upLast = false;
+var downLast = false;
+
 function gameUpdate(kb, blocks) {
   var updated = false;
+
+  if (kb.isDown(KEYS.DOWN)) {
+    if (!downLast) {
+      blocks[WH] = blocks[WH] - 1;
+      shootSound.play();
+      updated = true;
+    } 
+    
+    downLast = true;
+    upLast =false
+
+
+  } else if (kb.isDown(KEYS.UP)) {
+    if (!upLast) {
+    blocks[WH] = blocks[WH] + 1;
+    shootSound.play();
+    updated = true;
+    }
+    upLast = true;
+    downLast = false;
+  } else {
+    downLast = false;
+    upLast = false;
+  }
 
   if (kb.isDown(KEYS.LEFT)) {
 
@@ -45,21 +74,6 @@ function gameUpdate(kb, blocks) {
   } else if (kb.isDown(KEYS.RIGHT)) {
 
     blocks = Rot(blocks);
-    updated = true;
-  }
-
-  if (kb.isDown(KEYS.DOWN)) {
-
-    blocks[0] = blocks[0] - 1;
-    shootSound.play();
-
-    updated = true;
-
-  } else if (kb.isDown(KEYS.UP)) {
-
-    blocks[0] = blocks[0] + 1;
-    shootSound.play();
-
     updated = true;
   }
 
@@ -131,11 +145,9 @@ var HH = gameHeight / 2;
 
 function drawRect(screen, b, idx, W, H) {
   if (b !== 0) {
-    //screen.fillStyle = "black";
-    //screen.fillRect(idx, b+HH, 1, 1);
-    pix(screen, idx, b + HH, 0, 0, 0, 1);
+    pix(screen, idx,  HH - b, 0, 0, 0, 1);
   } else {
-    pix(screen, idx, b + HH, 0, 0, 0, .1);
+    pix(screen, idx,  HH - b, 0, 0, 0, .1);
   }
 };
 

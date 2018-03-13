@@ -15,6 +15,10 @@ body {
   color: #333;
 }
 
+canvas {
+  image-rendering: pixelated;
+}
+
 a {
   color: #444;
 }

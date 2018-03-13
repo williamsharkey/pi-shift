@@ -1,65 +1,90 @@
 var shootsound;
+gameWidth = 64;
+gameHeight = 64;
 function run() {
   shootSound = document.getElementById('shoot-sound');
   shootSound.load();
-  
-  var N = 4;
+
+
 
   var Primes = [-7, -5, -3, -2, 2, 3, 5, 7];
 
-  var Blocks = [0, 0, 0, 2, 1, 3, 0, 0];
 
+  var Blocks = new Array(gameWidth);
+  for (var i = 0; i < gameWidth; i++) Blocks[i] = 0;
 
   var canvas = document.getElementById("pi-shift");
 
   var screen = canvas.getContext('2d');
 
+  canvas.width = gameWidth;
+  canvas.height = gameHeight;
 
   var W = canvas.width;
   var H = canvas.height;
 
-
+  console.log({ W: W, H: H });
 
   var kb = Keyboarder();
 
-  tick(kb,W,H,screen,Blocks);
+  tick(kb, W, H, screen, Blocks);
 }
 
-var KEYS = { LEFT: 37, RIGHT: 39, S: 83 , UP:38, DOWN:40};
+var KEYS = { LEFT: 37, RIGHT: 39, S: 83, UP: 38, DOWN: 40 };
 
-function gameUpdate(kb,blocks) {
+var WH = gameWidth / 2;
+
+function gameUpdate(kb, blocks) {
+  var updated = false;
 
   if (kb.isDown(KEYS.LEFT)) {
-    blocks = arrayRotate(blocks,true);
+
+    blocks = RotRev(blocks);
+    updated = true;
 
   } else if (kb.isDown(KEYS.RIGHT)) {
-    blocks = arrayRotate(blocks,false);
+
+    blocks = Rot(blocks);
+    updated = true;
   }
 
   if (kb.isDown(KEYS.DOWN)) {
-    blocks[0]= blocks[0]-1;
+
+    blocks[0] = blocks[0] - 1;
     shootSound.play();
+
+    updated = true;
+
   } else if (kb.isDown(KEYS.UP)) {
-    blocks[0]= blocks[0]+1;    
+
+    blocks[0] = blocks[0] + 1;
     shootSound.play();
+
+    updated = true;
   }
 
-  return blocks;
+  return { updated: updated, blocks: blocks };
 }
 
-function arrayRotate(arr, reverse){
-  if(reverse)
-    arr.unshift(arr.pop())
-  else
-    arr.push(arr.shift())
-  return arr
-} 
+function Rot(arr) {
+  arr.push(arr.shift());
+  return arr;
+}
 
+function RotRev(arr) {
+  arr.unshift(arr.pop());
+  return arr;
+}
+
+var allKeys = [KEYS.UP, KEYS.DOWN, KEYS.LEFT, KEYS.RIGHT];
 
 function Keyboarder() {
   var keyState = {};
   window.addEventListener('keydown', function (e) {
     keyState[e.keyCode] = true;
+    if (allKeys.indexOf(e.keyCode) != -1) {
+      e.preventDefault();
+    }
   });
 
   window.addEventListener('keyup', function (e) {
@@ -68,18 +93,18 @@ function Keyboarder() {
   var isDown = function (keyCode) {
     return keyState[keyCode] === true;
   };
-  
-  return {keyState:keyState, isDown:isDown};
+
+  return { keyState: keyState, isDown: isDown };
 };
 
 
-function draw(screen, W,H, bodies) {
+function draw(screen, W, H, bodies) {
   // Clear away the drawing from the previous tick.
-  screen.clearRect(0, 0, W,H);
+  screen.clearRect(0, 0, W, H);
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
-    drawRect(screen, H-bodies[i], i, W, H);
+    drawRect(screen, bodies[i], i, W, H);
   }
 };
 
@@ -90,24 +115,34 @@ var update = function (bodies) {
   }
 };
 
-var tick = function (kb,W,H,screen,bodies) {
-  bodies = gameUpdate(kb,bodies);
-  draw(screen, W,H, bodies);
-  requestAnimationFrame(function(){tick(kb,W,H,screen,bodies);});
-  //tick();
+var tick = function (kb, W, H, screen, bodies) {
+  var result = gameUpdate(kb, bodies);
+  var updated = result.blocks;
+  var blocks = result.blocks;
+
+  if (updated) {
+    draw(screen, W, H, blocks);
+  }
+  requestAnimationFrame(function () { tick(kb, W, H, screen, blocks); });
+
 };
 
+var HH = gameHeight / 2;
 
-// **drawRect()** draws passed body as a rectangle to `screen`, the drawing context.
 function drawRect(screen, b, idx, W, H) {
-  if (b>0) {
-    screen.fillRect(idx , b , 1, 1);
-  }  
+  if (b !== 0) {
+    //screen.fillStyle = "black";
+    //screen.fillRect(idx, b+HH, 1, 1);
+    pix(screen, idx, b + HH, 0, 0, 0, 1);
+  } else {
+    pix(screen, idx, b + HH, 0, 0, 0, .1);
+  }
 };
 
-
-// Start game
-// ----------
+function pix(screen, x, y, r, g, b, a) {
+  screen.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+  screen.fillRect(x, y, 1, 1);
+}
 
 // When the DOM is ready, create (and start) the game.
 window.addEventListener('load', run);

@@ -1,6 +1,6 @@
-
+var shootsound;
 function run() {
-  var shootSound = document.getElementById('shoot-sound');
+  shootSound = document.getElementById('shoot-sound');
   shootSound.load();
   
   var N = 4;
@@ -25,7 +25,7 @@ function run() {
   tick(kb,W,H,screen,Blocks);
 }
 
-var KEYS = { LEFT: 37, RIGHT: 39, S: 83 };
+var KEYS = { LEFT: 37, RIGHT: 39, S: 83 , UP:38, DOWN:40};
 
 function gameUpdate(kb,blocks) {
 
@@ -36,9 +36,11 @@ function gameUpdate(kb,blocks) {
     blocks = arrayRotate(blocks,false);
   }
 
-  if (kb.isDown(KEYS.S)) {
-    blocks[0]= blocks[0]+1;
-    
+  if (kb.isDown(KEYS.DOWN)) {
+    blocks[0]= blocks[0]-1;
+    shootSound.play();
+  } else if (kb.isDown(KEYS.UP)) {
+    blocks[0]= blocks[0]+1;    
     shootSound.play();
   }
 
@@ -77,7 +79,7 @@ function draw(screen, W,H, bodies) {
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
-    drawRect(screen, bodies[i], i, W, H);
+    drawRect(screen, H-bodies[i], i, W, H);
   }
 };
 

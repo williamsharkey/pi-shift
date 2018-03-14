@@ -44,7 +44,7 @@ function gameUpdate(kb, blocks) {
     if (!downLast) {
       var dec = blocks[WH] - 1;
       blocks[WH] = dec;
-      createOscillator(dec, 800);
+      createOscillator(dec, 1600);
       updated = true;
     }
 
@@ -56,9 +56,7 @@ function gameUpdate(kb, blocks) {
     if (!upLast) {
       var inc = blocks[WH] + 1;
       blocks[WH] = inc;
-      
-      
-      createOscillator(inc,800);
+      createOscillator(inc, 1600);
       updated = true;
     }
     upLast = true;
@@ -69,15 +67,25 @@ function gameUpdate(kb, blocks) {
   }
 
   if (kb.isDown(KEYS.LEFT)) {
-
-    blocks = RotRev(blocks);
-    updated = true;
-
+    if(!leftLast){
+      blocks = RotRev(blocks);
+      updated = true;
+    }
+    leftLast=true;
+    rightLast=false;
+    
   } else if (kb.isDown(KEYS.RIGHT)) {
-
-    blocks = Rot(blocks);
-    updated = true;
+    if (!rightLast) {
+      blocks = Rot(blocks);
+      updated = true;
+    }
+    rightLast=true;
+    leftLast=false;
+  } else {
+    leftLast=false;
+    rightLast=false;
   }
+
 
   return { updated: updated, blocks: blocks };
 }
@@ -152,13 +160,13 @@ function drawRect(screen, b, idx, W, H) {
     pix(screen, idx, HH - b -1, 220, 180, 180, 1);
   }
    if (b !== 0) {
-    pix(screen, idx, HH - b, 0, 0, 0, 1);
+    pix(screen, idx, HH - b, 80, 72, 75, 1);
   } else {
     pix(screen, idx, HH - b, 0, 0, 0, .1);
   }
   var fill = H;
   while (fill>HH-b){
-    pix(screen, idx, fill, 90, 0, 0, .5);
+    pix(screen, idx, fill, 160, 114, 130, 1);
     fill=fill-1;
   }
 };

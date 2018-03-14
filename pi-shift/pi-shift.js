@@ -30,7 +30,7 @@ var leftLast = false;
 var rightLast = false;
 var upLast = false;
 var downLast = false;
-var scale = [0, 2, 3, 5, 7, 8, 10];
+var scale = [0, 1, 3, 5, 7, 8, 9, 11];
 var sl = scale.length;
 function gameUpdate(kb, blocks) {
   var updated = false;
@@ -64,6 +64,7 @@ function gameUpdate(kb, blocks) {
   if (kb(KEYS.LEFT)) {
     if (!leftLast) {
       blocks = RotRev(blocks);
+      noise(.3, 400);
       updated = true;
     }
     leftLast = true;
@@ -72,6 +73,7 @@ function gameUpdate(kb, blocks) {
   } else if (kb(KEYS.RIGHT)) {
     if (!rightLast) {
       blocks = Rot(blocks);
+      noise(.3, 400);
       updated = true;
     }
     rightLast = true;
@@ -179,7 +181,7 @@ function createOscillator(note, decay) {
   var index = (note + 10 * sl) % sl;
   var oct = ~~((note + 100 * sl) / sl) - 100;
   var interval = oct * 12 + scale[index];
-  console.log({ interval: interval, index: index, oct: oct });
+  //console.log({ interval: interval, index: index, oct: oct });
   var freq = 200.0 * Math.pow(2, interval / 12.0);
   var attack = 0;
   var volume = 0.2;
@@ -203,6 +205,49 @@ function createOscillator(note, decay) {
   }
 }
 
+AudioContext.prototype.createPinkNoise = function (bufferSize) {
+  bufferSize = bufferSize || 256;
+  var b0, b1, b2, b3, b4, b5, b6;
+  b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+  var node = this.createScriptProcessor(bufferSize, 1, 1);
+  node.onaudioprocess = function (e) {
+    var output = e.outputBuffer.getChannelData(0);
+    for (var i = 0; i < bufferSize; i++) {
+      var white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+      output[i] *= 0.11; // (roughly) compensate for gain
+      b6 = white * 0.115926;
+    }
+  }
+  return node;
+};
+
+function noise(vol, decay) {
+  var attack = 0;
+  var volume = vol;
+  var gain = audio.createGain();
+  var osc = audio.createPinkNoise();
+  var t = audio.currentTime;
+  gain.connect(audio.destination);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(volume, t + attack / 1000);
+  gain.gain.exponentialRampToValueAtTime(volume * 0.01, t + decay / 1000);
+  osc.connect(gain);
+  //osc.start(0);
+
+  setTimeout(audioTimeout, decay);
+  function audioTimeout() {
+    //osc.stop(0);
+    osc.disconnect(gain);
+    gain.disconnect(audio.destination);
+  }
+}
 
 // When the DOM is ready, create (and start) the game.
 window.addEventListener('load', run);

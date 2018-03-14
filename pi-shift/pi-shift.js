@@ -148,13 +148,18 @@ var HH = gameHeight / 2;
 function drawRect(screen, b, idx, W, H) {
   if (idx === WH) {
     pix(screen, idx, HH - b -3, 240, 200, 200, 1);
-    pix(screen, idx, HH - b -2, 100, 250, 200, 1);
-    pix(screen, idx, HH - b -1, 100, 200, 200, 1);
+    pix(screen, idx, HH - b -2, 120, 110, 180, 1);
+    pix(screen, idx, HH - b -1, 220, 180, 180, 1);
   }
    if (b !== 0) {
     pix(screen, idx, HH - b, 0, 0, 0, 1);
   } else {
     pix(screen, idx, HH - b, 0, 0, 0, .1);
+  }
+  var fill = H;
+  while (fill>HH-b){
+    pix(screen, idx, fill, 90, 0, 0, .5);
+    fill=fill-1;
   }
 };
 
@@ -167,7 +172,7 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var audio = new AudioContext();
 
 function createOscillator(note, decay) {
-  var freq =  200 * Math.pow(2, (12*(note/sl) + scale[(note+10*sl)%sl]) / 12.0);
+  var freq =  200.0 * Math.pow(2, (12*((sl*10+note)/sl-10) + scale[(note+10*sl)%sl]+1.0) / 12.0);
   var attack = 0;
   var volume = 0.2;
   var gain = audio.createGain();

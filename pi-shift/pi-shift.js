@@ -1,14 +1,11 @@
-var shootsound;
-gameWidth = 64;
-gameHeight = 64;
+var vib;
+const gameWidth = 64;
+const gameHeight = 64;
 function run() {
-  shootSound = document.getElementById('shoot-sound');
-  shootSound.load();
-
-
+  vib = document.getElementById('vib');
+  vib.load();
 
   var Primes = [-7, -5, -3, -2, 2, 3, 5, 7];
-
 
   var Blocks = new Array(gameWidth);
   for (var i = 0; i < gameWidth; i++) Blocks[i] = 0;
@@ -38,26 +35,31 @@ var leftLast = false;
 var rightLast = false;
 var upLast = false;
 var downLast = false;
-
+var scale =[0,2,3,5,7,8,9,11];
+var sl = scale.length;
 function gameUpdate(kb, blocks) {
   var updated = false;
 
   if (kb.isDown(KEYS.DOWN)) {
     if (!downLast) {
-      blocks[WH] = blocks[WH] - 1;
-      shootSound.play();
+      var dec = blocks[WH] - 1;
+      blocks[WH] = dec;
+      createOscillator(dec, 800);
       updated = true;
-    } 
-    
+    }
+
     downLast = true;
-    upLast =false
+    upLast = false
 
 
   } else if (kb.isDown(KEYS.UP)) {
     if (!upLast) {
-    blocks[WH] = blocks[WH] + 1;
-    shootSound.play();
-    updated = true;
+      var inc = blocks[WH] + 1;
+      blocks[WH] = inc;
+      
+      
+      createOscillator(inc,800);
+      updated = true;
     }
     upLast = true;
     downLast = false;
@@ -144,10 +146,15 @@ var tick = function (kb, W, H, screen, bodies) {
 var HH = gameHeight / 2;
 
 function drawRect(screen, b, idx, W, H) {
-  if (b !== 0) {
-    pix(screen, idx,  HH - b, 0, 0, 0, 1);
+  if (idx === WH) {
+    pix(screen, idx, HH - b -3, 240, 200, 200, 1);
+    pix(screen, idx, HH - b -2, 100, 250, 200, 1);
+    pix(screen, idx, HH - b -1, 100, 200, 200, 1);
+  }
+   if (b !== 0) {
+    pix(screen, idx, HH - b, 0, 0, 0, 1);
   } else {
-    pix(screen, idx,  HH - b, 0, 0, 0, .1);
+    pix(screen, idx, HH - b, 0, 0, 0, .1);
   }
 };
 
@@ -155,6 +162,36 @@ function pix(screen, x, y, r, g, b, a) {
   screen.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
   screen.fillRect(x, y, 1, 1);
 }
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var audio = new AudioContext();
+
+function createOscillator(note, decay) {
+  var freq =  200 * Math.pow(2, (12*(note/sl) + scale[(note+10*sl)%sl]) / 12.0);
+  var attack = 0;
+  var volume = 0.2;
+  var gain = audio.createGain();
+  var osc = audio.createOscillator();
+  var t = audio.currentTime;
+  gain.connect(audio.destination);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(volume, t + attack / 1000);
+  gain.gain.exponentialRampToValueAtTime(volume * 0.01, t + decay / 1000);
+  osc.frequency.setValueAtTime(freq,t);
+  osc.type = "triangle";
+  osc.connect(gain);
+  osc.start(0);
+
+  setTimeout(audioTimeout, decay);
+  function audioTimeout() {
+      osc.stop(0);
+      osc.disconnect(gain);
+      gain.disconnect(audio.destination);
+  }
+}
+
+
+
 
 // When the DOM is ready, create (and start) the game.
 window.addEventListener('load', run);

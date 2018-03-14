@@ -1,11 +1,8 @@
-var vib;
 const gameWidth = 64;
 const gameHeight = 64;
 function run() {
-  vib = document.getElementById('vib');
-  vib.load();
 
-  var Primes = [-7, -5, -3, -2, 2, 3, 5, 7];
+  //var Primes = [-7, -5, -3, -2, 2, 3, 5, 7];
 
   var Blocks = new Array(gameWidth);
   for (var i = 0; i < gameWidth; i++) Blocks[i] = 0;
@@ -20,8 +17,6 @@ function run() {
   var W = canvas.width;
   var H = canvas.height;
 
-  console.log({ W: W, H: H });
-
   var kb = Keyboarder();
 
   tick(kb, W, H, screen, Blocks);
@@ -35,12 +30,12 @@ var leftLast = false;
 var rightLast = false;
 var upLast = false;
 var downLast = false;
-var scale =[0,2,3,5,7,8,9,11];
+var scale = [0, 2, 3, 5, 7, 8, 10];
 var sl = scale.length;
 function gameUpdate(kb, blocks) {
   var updated = false;
 
-  if (kb.isDown(KEYS.DOWN)) {
+  if (kb(KEYS.DOWN)) {
     if (!downLast) {
       var dec = blocks[WH] - 1;
       blocks[WH] = dec;
@@ -52,7 +47,7 @@ function gameUpdate(kb, blocks) {
     upLast = false
 
 
-  } else if (kb.isDown(KEYS.UP)) {
+  } else if (kb(KEYS.UP)) {
     if (!upLast) {
       var inc = blocks[WH] + 1;
       blocks[WH] = inc;
@@ -66,24 +61,24 @@ function gameUpdate(kb, blocks) {
     upLast = false;
   }
 
-  if (kb.isDown(KEYS.LEFT)) {
-    if(!leftLast){
+  if (kb(KEYS.LEFT)) {
+    if (!leftLast) {
       blocks = RotRev(blocks);
       updated = true;
     }
-    leftLast=true;
-    rightLast=false;
-    
-  } else if (kb.isDown(KEYS.RIGHT)) {
+    leftLast = true;
+    rightLast = false;
+
+  } else if (kb(KEYS.RIGHT)) {
     if (!rightLast) {
       blocks = Rot(blocks);
       updated = true;
     }
-    rightLast=true;
-    leftLast=false;
+    rightLast = true;
+    leftLast = false;
   } else {
-    leftLast=false;
-    rightLast=false;
+    leftLast = false;
+    rightLast = false;
   }
 
 
@@ -118,7 +113,7 @@ function Keyboarder() {
     return keyState[keyCode] === true;
   };
 
-  return { keyState: keyState, isDown: isDown };
+  return isDown;
 };
 
 
@@ -155,19 +150,19 @@ var HH = gameHeight / 2;
 
 function drawRect(screen, b, idx, W, H) {
   if (idx === WH) {
-    pix(screen, idx, HH - b -3, 240, 200, 200, 1);
-    pix(screen, idx, HH - b -2, 120, 110, 180, 1);
-    pix(screen, idx, HH - b -1, 220, 180, 180, 1);
+    pix(screen, idx, HH - b - 3, 240, 200, 200, 1);
+    pix(screen, idx, HH - b - 2, 120, 110, 180, 1);
+    pix(screen, idx, HH - b - 1, 220, 180, 180, 1);
   }
-   if (b !== 0) {
+  if (b !== 0) {
     pix(screen, idx, HH - b, 80, 72, 75, 1);
   } else {
     pix(screen, idx, HH - b, 0, 0, 0, .1);
   }
   var fill = H;
-  while (fill>HH-b){
+  while (fill > HH - b) {
     pix(screen, idx, fill, 160, 114, 130, 1);
-    fill=fill-1;
+    fill = fill - 1;
   }
 };
 
@@ -180,7 +175,12 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var audio = new AudioContext();
 
 function createOscillator(note, decay) {
-  var freq =  200.0 * Math.pow(2, (12*((sl*10+note)/sl-10) + scale[(note+10*sl)%sl]+1.0) / 12.0);
+
+  var index = (note + 10 * sl) % sl;
+  var oct = ~~((note + 100 * sl) / sl) - 100;
+  var interval = oct * 12 + scale[index];
+  console.log({ interval: interval, index: index, oct: oct });
+  var freq = 200.0 * Math.pow(2, interval / 12.0);
   var attack = 0;
   var volume = 0.2;
   var gain = audio.createGain();
@@ -190,20 +190,18 @@ function createOscillator(note, decay) {
   gain.gain.setValueAtTime(0, t);
   gain.gain.linearRampToValueAtTime(volume, t + attack / 1000);
   gain.gain.exponentialRampToValueAtTime(volume * 0.01, t + decay / 1000);
-  osc.frequency.setValueAtTime(freq,t);
+  osc.frequency.setValueAtTime(freq, t);
   osc.type = "triangle";
   osc.connect(gain);
   osc.start(0);
 
   setTimeout(audioTimeout, decay);
   function audioTimeout() {
-      osc.stop(0);
-      osc.disconnect(gain);
-      gain.disconnect(audio.destination);
+    osc.stop(0);
+    osc.disconnect(gain);
+    gain.disconnect(audio.destination);
   }
 }
-
-
 
 
 // When the DOM is ready, create (and start) the game.

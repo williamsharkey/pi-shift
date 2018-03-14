@@ -1,12 +1,12 @@
 <!doctype html>
 <html>
+
 <head>
   <title>Pi Shift</title>
-  <link type="text/css" rel="stylesheet" href="style.css" />
   <style>
     canvas {
       background: #e9e3ff;
-      width:  512px;
+      width: 512px;
       height: 512px;
       box-shadow: 0px 0px 0px 8px #4a4a4c;
       image-rendering: pixelated;
@@ -14,23 +14,49 @@
       margin: 32px auto;
       transition: background-color 7s;
     }
+
+    body {
+      font-family: sans-serif;
+      line-height: 1.26em;
+      width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 10px 0 10px;
+      color: #cecece;
+      background: #545067;
+    }
+
+    a {
+      color: #cecece;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    p {
+      margin: 0 0 12px 0;
+      font-size: 11pt;
+    }
+
+    .header{
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
   <div class="header">
-    <a href='/'>
       <h1>Pi Shifted</h1>
       <div class="strapline">numbers as stacks of boxes to be shifted</div>
-    </a>
   </div>
-  <audio id="vib" src="vib_86.wav"></audio>
+
   <div>
     <canvas id="pi-shift"></canvas>
   </div>
   <div>
     <p>
-      Move with the arrow keys. Left and Right to shift. 
-      Up and Down to move box. Refresh to play again.
+      Move with the arrow keys. Left and Right to shift. Up and Down to move box. <a href='/'>Refresh</a> to play again.
     </p>
   </div>
   <div class="footer">
@@ -38,4 +64,5 @@
   </div>
   <script src="pi-shift.js"></script>
 </body>
+
 </html>

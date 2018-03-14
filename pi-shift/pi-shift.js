@@ -1,8 +1,10 @@
 const gameWidth = 64;
 const gameHeight = 64;
+var turn = 0;
 function run() {
 
   //var Primes = [-7, -5, -3, -2, 2, 3, 5, 7];
+
 
   var Blocks = new Array(gameWidth);
   for (var i = 0; i < gameWidth; i++) Blocks[i] = 0;
@@ -30,7 +32,8 @@ var leftLast = false;
 var rightLast = false;
 var upLast = false;
 var downLast = false;
-var scale = [0, 1, 3, 5, 7, 8, 9, 11];
+//var scale = [0, 1, 3, 5, 7, 8, 9, 11];
+var scale = [0, -2, 12, 19, 5, 4, 0, 7, 9];
 var sl = scale.length;
 function gameUpdate(kb, blocks) {
   var updated = false;
@@ -123,7 +126,8 @@ function draw(screen, W, H, bodies) {
   // Clear away the drawing from the previous tick.
   screen.clearRect(0, 0, W, H);
 
-  drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, 255);
+  //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
+  drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
@@ -141,10 +145,14 @@ var update = function (bodies) {
 
 var tick = function (kb, W, H, screen, bodies) {
   var result = gameUpdate(kb, bodies);
-  var updated = result.blocks;
   var blocks = result.blocks;
-
+  var updated = result.updated;
   if (updated) {
+    turn = turn + 1;
+  }
+
+  if (updated || turn === 0) {
+
     draw(screen, W, H, blocks);
   }
   requestAnimationFrame(function () { tick(kb, W, H, screen, blocks); });
@@ -154,16 +162,20 @@ var tick = function (kb, W, H, screen, bodies) {
 var HH = gameHeight / 2;
 
 function drawRect(screen, b, idx, W, H) {
-  if (idx === WH) {
-    pix(screen, idx, HH - b - 3, 240, 200, 200, 1);
-    pix(screen, idx, HH - b - 2, 120, 110, 180, 1);
-    pix(screen, idx, HH - b - 1, 220, 180, 180, 1);
-  }
+
   if (b !== 0) {
     pix(screen, idx, HH - b, 80, 72, 75, 1);
   } else {
     pix(screen, idx, HH - b, 0, 0, 0, .1);
   }
+
+  if (idx === WH) {
+    pix(screen, idx, HH - b, 80, 120, 140, 1);
+    //pix(screen, idx, HH - b - 3, 240, 200, 200, 1);
+    //pix(screen, idx, HH - b - 2, 120, 110, 180, 1);
+    //pix(screen, idx, HH - b - 1, 220, 180, 180, 1);
+  }
+
   var fill = H;
   while (fill > HH - b) {
     pix(screen, idx, fill, 160, 114, 130, 1);
@@ -185,7 +197,7 @@ function createOscillator(note, decay) {
   var oct = ~~((note + 100 * sl) / sl) - 100;
   var interval = oct * 12 + scale[index];
   //console.log({ interval: interval, index: index, oct: oct });
-  var freq = 200.0 * Math.pow(2, interval / 12.0);
+  var freq = 300.0 * Math.pow(2, interval / 12.0);
   var attack = 0;
   var volume = 0.2;
   var gain = audio.createGain();

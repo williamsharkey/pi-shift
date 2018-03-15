@@ -1,5 +1,5 @@
-const gameWidth = 64;
-const gameHeight = 64;
+var gameWidth = 128;
+var gameHeight = 128;
 var turn = 0;
 function run() {
 
@@ -32,8 +32,8 @@ var leftLast = false;
 var rightLast = false;
 var upLast = false;
 var downLast = false;
-//var scale = [0, 1, 3, 5, 7, 8, 9, 11];
-var scale = [0, -2, 12, 19, 5, 4, 0, 7, 9];
+var scale = [0, 1, 3, 5, 7, 8, 10];
+//var scale = [0, -2, 12, 19, 5, 4, 0, 7, 9];
 var sl = scale.length;
 function gameUpdate(kb, blocks) {
   var updated = false;
@@ -127,7 +127,9 @@ function draw(screen, W, H, bodies) {
   screen.clearRect(0, 0, W, H);
 
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
-  drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
+  //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
+  //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
+  textProp(screen, 16, 16, "HELLO WORLD 123 " + turn, 160, 114, 130, 1);
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
@@ -143,6 +145,7 @@ var update = function (bodies) {
   }
 };
 
+var neverDrawn = true;
 var tick = function (kb, W, H, screen, bodies) {
   var result = gameUpdate(kb, bodies);
   var blocks = result.blocks;
@@ -151,9 +154,9 @@ var tick = function (kb, W, H, screen, bodies) {
     turn = turn + 1;
   }
 
-  if (updated || turn === 0) {
-
+  if (updated || neverDrawn) {
     draw(screen, W, H, blocks);
+    neverDrawn = false;
   }
   requestAnimationFrame(function () { tick(kb, W, H, screen, blocks); });
 
@@ -574,5 +577,70 @@ function drawString(screen, x, y, s, r, g, b, a) {
         pix(screen, x + i * 8 + 7, y + line, r, g, b, a);
       }
     }
+  }
+}
+
+function letterLR(letter) {
+  var charCode = letter.charCodeAt(0);
+  var idx = charCode * 8;
+
+  var mask = 0x00
+    | font[idx + 0]
+    | font[idx + 1]
+    | font[idx + 2]
+    | font[idx + 3]
+    | font[idx + 4]
+    | font[idx + 5]
+    | font[idx + 6]
+    | font[idx + 7]
+    ;
+
+  if (mask == 0) {
+    return { L: 0, R: 5, mask: mask };
+  }
+  var L = 0;
+  for (var i = 0; i < 7; i++) {
+    if (mask & (0x80 >> i)) {
+      L = i;
+      break;
+    }
+  }
+  var R = 7;
+  for (var i = 7; i > 0; i--) {
+    if (mask & (0x80 >> i)) {
+      R = i;
+      break;
+    }
+  }
+  return { L: L, R: R, mask: mask };
+}
+
+function textProp(screen, x, y, s, r, g, b, a) {
+
+  const pad = 1;
+  var wSum = 0;
+  for (var i = 0; i < s.length; i++) {
+
+    var letter = s[i];
+    var charCode = letter.charCodeAt(0);
+    var LR = letterLR(letter);
+
+    for (line = 0; line < 8; line++) {
+
+      var c = font[charCode * 8 + line];
+
+      for (var place = 0; place <= 7; place++) {
+        if (c & 0x80 >> place) {
+          pix(screen, x + wSum + place - LR.L, y + line, r, g, b, a);
+        }
+      }
+    }
+
+    //console.log(letter + " " + LR.L + " " + LR.R);
+    //char bound box
+    //pix(screen, x + wSum, y, 255, 0, 0, 1);
+    //pix(screen, x + wSum + LR.R - LR.L, y + 1, 0, 255, 0, 1);
+
+    wSum = wSum + LR.R - LR.L + 1 + pad;
   }
 }

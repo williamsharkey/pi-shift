@@ -1,5 +1,5 @@
-var gameWidth = 128;
-var gameHeight = 128;
+var gameWidth = 48;
+var gameHeight = 48;
 var turn = 0;
 function run() {
 
@@ -65,7 +65,8 @@ function gameUpdate(kb, blocks) {
   }
 
   if (kb(KEYS.LEFT)) {
-    if (!leftLast) {
+    var diff = (blocks[WH-1]-blocks[WH]) <= 1;
+    if (!leftLast && diff) {
       blocks = RotRev(blocks);
       noise(.3, 400);
       updated = true;
@@ -74,7 +75,8 @@ function gameUpdate(kb, blocks) {
     rightLast = false;
 
   } else if (kb(KEYS.RIGHT)) {
-    if (!rightLast) {
+    var diff = (blocks[WH+1]-blocks[WH]) <= 1;
+    if (!rightLast && diff) {
       blocks = Rot(blocks);
       noise(.3, 400);
       updated = true;
@@ -129,7 +131,7 @@ function draw(screen, W, H, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  textProp(screen, 16, 16, "HELLO WORLD 123 " + turn, 160, 114, 130, 1);
+  textProp(screen, 4, 16, "WINDS", 160, 114, 130, 1);
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {

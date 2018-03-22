@@ -1,32 +1,29 @@
-var gameWidth = 48;
-var gameHeight = 48;
+var W = 80;
+var H = 50;
+// Player e=energy
+var P = { e: 0 };
 var turn = 0;
 function run() {
 
-  //var Primes = [-7, -5, -3, -2, 2, 3, 5, 7];
-
-
-  var Blocks = new Array(gameWidth);
-  for (var i = 0; i < gameWidth; i++) Blocks[i] = 0;
+  var Blocks = new Array(W);
+  for (var i = 0; i < W; i++) Blocks[i] = 0;
 
   var canvas = document.getElementById("pi-shift");
 
   var screen = canvas.getContext('2d');
 
-  canvas.width = gameWidth;
-  canvas.height = gameHeight;
+  canvas.width = W;
+  canvas.height = H;
 
-  var W = canvas.width;
-  var H = canvas.height;
 
   var kb = Keyboarder();
 
-  tick(kb, W, H, screen, Blocks);
+  tick(kb, screen, Blocks);
 }
 
 var KEYS = { LEFT: 37, RIGHT: 39, S: 83, UP: 38, DOWN: 40 };
 
-var WH = gameWidth / 2;
+var WH = W / 2;
 
 var leftLast = false;
 var rightLast = false;
@@ -37,24 +34,25 @@ var scale = [0, 1, 3, 5, 7, 8, 10];
 var sl = scale.length;
 function gameUpdate(kb, blocks) {
   var updated = false;
-
+  var denied = false;
   if (kb(KEYS.DOWN)) {
     if (!downLast) {
       var dec = blocks[WH] - 1;
       blocks[WH] = dec;
       createOscillator(dec, 1600);
+      P.e = P.e + 1;
       updated = true;
     }
 
     downLast = true;
     upLast = false
 
-
   } else if (kb(KEYS.UP)) {
     if (!upLast) {
       var inc = blocks[WH] + 1;
       blocks[WH] = inc;
       createOscillator(inc, 1600);
+      P.e = P.e - 1;
       updated = true;
     }
     upLast = true;
@@ -65,29 +63,41 @@ function gameUpdate(kb, blocks) {
   }
 
   if (kb(KEYS.LEFT)) {
-    var diff = (blocks[WH-1]-blocks[WH]) <= 1;
-    if (!leftLast && diff) {
-      blocks = RotRev(blocks);
-      noise(.3, 400);
-      updated = true;
+    var allowed = (blocks[WH - 1] - blocks[WH]) <= 1;
+    if (!leftLast) {
+      leftLast = true;
+      rightLast = false;
+      if (allowed) {
+        blocks = RotRev(blocks);
+        createOscillator(blocks[WH], 1600);
+        updated = true;
+      } else {
+        denied = true;
+      }
     }
-    leftLast = true;
-    rightLast = false;
 
   } else if (kb(KEYS.RIGHT)) {
-    var diff = (blocks[WH+1]-blocks[WH]) <= 1;
-    if (!rightLast && diff) {
-      blocks = Rot(blocks);
-      noise(.3, 400);
-      updated = true;
+    var allowed = (blocks[WH + 1] - blocks[WH]) <= 1;
+    if (!rightLast) {
+      rightLast = true;
+      leftLast = false;
+      if (allowed) {
+        blocks = Rot(blocks);
+        createOscillator(blocks[WH], 1600);
+        updated = true;
+      } else {
+        denied = true;
+      }
     }
-    rightLast = true;
-    leftLast = false;
+
   } else {
     leftLast = false;
     rightLast = false;
   }
 
+  if (denied) {
+    noise(.3, 400);
+  }
 
   return { updated: updated, blocks: blocks };
 }
@@ -124,18 +134,28 @@ function Keyboarder() {
 };
 
 
-function draw(screen, W, H, bodies) {
+function draw(screen, bodies) {
   // Clear away the drawing from the previous tick.
   screen.clearRect(0, 0, W, H);
 
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  textProp(screen, 4, 16, "WINDS", 160, 114, 130, 1);
+  textProp(screen, 4, 16, "I <3 WILLIAMU", 200, 214, 255, 1);
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
-    drawRect(screen, bodies[i], i, W, H);
+    drawRect(screen, bodies[i], i);
+  }
+
+  var abs = Math.abs(P.e);
+  var de = P.e > 0 ? 1 : -1;
+  for (var i = 0; Math.abs(i) < abs; i = i + de) {
+    if (de > 0) {
+      pix(screen, WH+i, H - 2, 150, 255, 150, .7);
+    } else {
+      pix(screen, WH+i, H - 2, 255, 150, 150, .7);
+    }
   }
 
 };
@@ -148,7 +168,7 @@ var update = function (bodies) {
 };
 
 var neverDrawn = true;
-var tick = function (kb, W, H, screen, bodies) {
+var tick = function (kb, screen, bodies) {
   var result = gameUpdate(kb, bodies);
   var blocks = result.blocks;
   var updated = result.updated;
@@ -157,25 +177,25 @@ var tick = function (kb, W, H, screen, bodies) {
   }
 
   if (updated || neverDrawn) {
-    draw(screen, W, H, blocks);
+    draw(screen, blocks);
     neverDrawn = false;
   }
-  requestAnimationFrame(function () { tick(kb, W, H, screen, blocks); });
+  requestAnimationFrame(function () { tick(kb, screen, blocks); });
 
 };
 
-var HH = gameHeight / 2;
+var HH = H / 2;
 
-function drawRect(screen, b, idx, W, H) {
+function drawRect(screen, b, idx) {
 
-  if (b !== 0) {
-    pix(screen, idx, HH - b, 80, 72, 75, 1);
-  } else {
-    pix(screen, idx, HH - b, 0, 0, 0, .1);
-  }
+  //if (b !== 0) {
+  pix(screen, idx, HH - b, 100, 92, 95, 1);
+  //} else {
+  //  pix(screen, idx, HH - b, 0, 0, 0, .1);
+  //}
 
   if (idx === WH) {
-    pix(screen, idx, HH - b, 80, 120, 140, 1);
+    pix(screen, idx, HH - b, 256, 0, 0, 1);
     //pix(screen, idx, HH - b - 3, 240, 200, 200, 1);
     //pix(screen, idx, HH - b - 2, 120, 110, 180, 1);
     //pix(screen, idx, HH - b - 1, 220, 180, 180, 1);

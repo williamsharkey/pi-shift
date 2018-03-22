@@ -3,10 +3,11 @@ var H = 50;
 // Player e=energy
 var P = { e: 0 };
 var turn = 0;
+var view = 0;
 function run() {
 
   var Blocks = new Array(W);
-  for (var i = 0; i < W; i++) Blocks[i] = 0;
+  for (var i = 0; i < W; i++) Blocks[i] = -8;
 
   var canvas = document.getElementById("pi-shift");
 
@@ -69,6 +70,7 @@ function gameUpdate(kb, blocks) {
       rightLast = false;
       if (allowed) {
         blocks = RotRev(blocks);
+        view = view - 1;
         createOscillator(blocks[WH], 1600);
         updated = true;
       } else {
@@ -83,6 +85,7 @@ function gameUpdate(kb, blocks) {
       leftLast = false;
       if (allowed) {
         blocks = Rot(blocks);
+        view = view + 1;
         createOscillator(blocks[WH], 1600);
         updated = true;
       } else {
@@ -141,7 +144,7 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  textProp(screen, 4, 16, "I <3 WILLIAMU", 200, 214, 255, 1);
+  textProp(screen, 4 - view, 8-turn, "SO FAR AWAY", 200, 214, 255, 1);
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
@@ -152,9 +155,9 @@ function draw(screen, bodies) {
   var de = P.e > 0 ? 1 : -1;
   for (var i = 0; Math.abs(i) < abs; i = i + de) {
     if (de > 0) {
-      pix(screen, WH+i, H - 2, 150, 255, 150, .7);
+      pix(screen, WH + i % 8, H - 2 - ~~(i / 8), 150, 255, 150, .7);
     } else {
-      pix(screen, WH+i, H - 2, 255, 150, 150, .7);
+      pix(screen, WH + i % 8, H - 2 + ~~(i / 8), 255, 150, 150, .7);
     }
   }
 
@@ -201,7 +204,7 @@ function drawRect(screen, b, idx) {
     //pix(screen, idx, HH - b - 1, 220, 180, 180, 1);
   }
 
-  var fill = H;
+  var fill = H-1;
   while (fill > HH - b) {
     pix(screen, idx, fill, 160, 114, 130, 1);
     fill = fill - 1;
@@ -210,7 +213,7 @@ function drawRect(screen, b, idx) {
 
 function pix(screen, x, y, r, g, b, a) {
   screen.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
-  screen.fillRect(x, y, 1, 1);
+  screen.fillRect((W * 100 + x) % W, (H * 100 + y) % H, 1, 1);
 }
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;

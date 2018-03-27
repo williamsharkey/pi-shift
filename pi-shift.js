@@ -139,31 +139,42 @@ function RotRev(arr) {
 
 var allKeys = [KEYS.UP, KEYS.DOWN, KEYS.LEFT, KEYS.RIGHT];
 
-var lclick, rclick, uclick, dclick = null;
+
 
 function Keyboarder() {
 
   var keyState = {};
 
-  lclick = function (e) {
+  
+
+  var lclick = function (e) {
     keyState[KEYS.LEFT] = true;
     setTimeout(function () { keyState[KEYS.LEFT] = false; }, 200);
   };
 
-  rclick = function (e) {
+  document.getElementById("left").addEventListener("touchstart", lclick, false); 
+
+  var rclick = function (e) {
     keyState[KEYS.RIGHT] = true;
     setTimeout(function () { keyState[KEYS.RIGHT] = false; }, 200);
   };
 
-  uclick = function (e) {
+
+  document.getElementById("right").addEventListener("touchstart", rclick, false); 
+
+  var uclick = function (e) {
     keyState[KEYS.UP] = true;
     setTimeout(function () { keyState[KEYS.UP] = false; }, 200);
   };
 
-  dclick = function (e) {
+  document.getElementById("up").addEventListener("touchstart", uclick, false); 
+
+  var dclick = function (e) {
     keyState[KEYS.DOWN] = true;
     setTimeout(function () { keyState[KEYS.DOWN] = false; }, 200);
   };
+
+  document.getElementById("down").addEventListener("touchstart", dclick, false); 
 
 
   window.addEventListener('keydown', function (e) {

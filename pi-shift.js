@@ -1,7 +1,7 @@
 var W = 80;
 var H = 50;
 // Player e=energy
-var P = { e: 0 };
+var P = { e: 0 ,x:0,y:0};
 var turn = 0;
 var view = 0;
 function run() {
@@ -40,6 +40,7 @@ function gameUpdate(kb, blocks) {
     if (!downLast) {
       var dec = blocks[WH] - 1;
       blocks[WH] = dec;
+      P.y--;
       createOscillator(dec, 1600);
       P.e = P.e + 1;
       updated = true;
@@ -52,6 +53,7 @@ function gameUpdate(kb, blocks) {
     if (!upLast) {
       var inc = blocks[WH] + 1;
       blocks[WH] = inc;
+      P.y++;
       createOscillator(inc, 1600);
       P.e = P.e - 1;
       updated = true;
@@ -71,6 +73,7 @@ function gameUpdate(kb, blocks) {
       if (allowed) {
         blocks = RotRev(blocks);
         view = view - 1;
+        P.x--;
         createOscillator(blocks[WH], 1600);
         updated = true;
       } else {
@@ -86,6 +89,7 @@ function gameUpdate(kb, blocks) {
       if (allowed) {
         blocks = Rot(blocks);
         view = view + 1;
+        P.x++;
         createOscillator(blocks[WH], 1600);
         updated = true;
       } else {
@@ -150,7 +154,7 @@ function draw(screen, bodies) {
   for (var i = 0; i < bodies.length; i++) {
     drawRect(screen, bodies[i], i);
   }
-
+  pix(screen,WH+P.x,HH-P.y,0,255,255,1);
   var abs = Math.abs(P.e);
   var de = P.e > 0 ? 1 : -1;
   for (var i = 0; Math.abs(i) < abs; i = i + de) {

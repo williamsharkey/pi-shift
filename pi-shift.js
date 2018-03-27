@@ -312,13 +312,18 @@ function drawRect(screen, b, idx) {
 };
 
 function pix(screen, x, y, r, g, b, a) {
+
+  if(x<0||y<0||x>=W||y>=H) return;
+
   screen.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
-  screen.fillRect((W * 100 + x) % W, (H * 100 + y) % H, 1, 1);
+  screen.fillRect( x,  y, 1, 1);
 }
 
 function pixc(screen, x, y, c) {
+  if(x<0||y<0||x>=W||y>=H) return;
+
   screen.fillStyle = c;
-  screen.fillRect((W * 100 + x) % W, (H * 100 + y) % H, 1, 1);
+  screen.fillRect( x,  y, 1, 1);
 }
 
 function c(r, g, b, a) {

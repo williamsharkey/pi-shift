@@ -41,7 +41,7 @@ function gameUpdate(kb, blocks) {
       var dec = blocks[view] - 1;
       blocks[view] = dec;
       P.y--;
-      createOscillator(P.Y, 1600);
+      createOscillator(P.y, 1600);
       P.e = P.e + 1;
       updated = true;
     }

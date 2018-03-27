@@ -139,43 +139,46 @@ function RotRev(arr) {
 
 var allKeys = [KEYS.UP, KEYS.DOWN, KEYS.LEFT, KEYS.RIGHT];
 
+var rclick, lclick, uclick, dclick = null;
 
 
 function Keyboarder() {
 
   var keyState = {};
 
-  
-
-  var lclick = function (e) {
+  lclick = function (e) {
     keyState[KEYS.LEFT] = true;
     setTimeout(function () { keyState[KEYS.LEFT] = false; }, 200);
   };
 
-  document.getElementById("left").addEventListener("touchstart", lclick, false); 
 
-  var rclick = function (e) {
+  document.getElementById("left").addEventListener("touchstart", lclick, false);
+  document.getElementById("left").addEventListener("onmousedown", lclick, false);
+
+  rclick = function (e) {
     keyState[KEYS.RIGHT] = true;
     setTimeout(function () { keyState[KEYS.RIGHT] = false; }, 200);
   };
 
 
-  document.getElementById("right").addEventListener("touchstart", rclick, false); 
+  document.getElementById("right").addEventListener("touchstart", rclick, false);
+  document.getElementById("right").addEventListener("onmousedown", rclick, false);
 
-  var uclick = function (e) {
+  uclick = function (e) {
     keyState[KEYS.UP] = true;
     setTimeout(function () { keyState[KEYS.UP] = false; }, 200);
   };
 
-  document.getElementById("up").addEventListener("touchstart", uclick, false); 
+  document.getElementById("up").addEventListener("touchstart", uclick, false);
+  document.getElementById("up").addEventListener("onmousedown", uclick, false);
 
-  var dclick = function (e) {
+  dclick = function (e) {
     keyState[KEYS.DOWN] = true;
     setTimeout(function () { keyState[KEYS.DOWN] = false; }, 200);
   };
 
-  document.getElementById("down").addEventListener("touchstart", dclick, false); 
-
+  document.getElementById("down").addEventListener("touchstart", dclick, false);
+  document.getElementById("down").addEventListener("onmousedown", dclick, false);
 
   window.addEventListener('keydown', function (e) {
     keyState[e.keyCode] = true;
@@ -209,9 +212,9 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  var story = ["","BEHOLD","THE OLD","DUSTY BOT","","","   !!!","AWAKENED","ONCE MORE","","CIRCUITS","CHIRPING", "AND COLD", "BLINKY LEDS","PULSING", "THE CPU" , "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>"," *DEAR BOT* ", "IT IS I","VERMUNA","BIRD OF","THE EAST","I WILL BE","YOUR GUIDE", "WITH BLACK"," WINGS","SHARP BEAK","AND WIREY","ORANGE FEET","<<CAWW>>", "CALLS YOU BOT","CARRY THAT","ROUND ROCK", "INTO", "  THE CAVE  "," (THE CAVE) ","((        ))", "OF MYSTERY", ".", ".", "WERE WE","SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION","DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS","TOO MUCH.","*","DIRTY ROCKS","SLID AND SOD", "CRUMBLED"];
+  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "   !!!", "AWAKENED", "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS", "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF", "THE EAST", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS", "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "CALLS YOU BOT", "CARRY THAT", "ROUND ROCK", "INTO", "  THE CAVE  ", " (THE CAVE) ", "((        ))", "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD", "CRUMBLED"];
 
-  textProp(screen, 4, 8, story[Math.floor(turn/3) % story.length], 200, 214, 255, 1);
+  textProp(screen, 4, 8, story[Math.floor(turn / 3) % story.length], 200, 214, 255, 1);
 
 
 

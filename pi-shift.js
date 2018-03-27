@@ -198,7 +198,9 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  textProp(screen, 4 - view, 8 - turn, "SO FAR AWAY", 200, 214, 255, 1);
+  var story = ["WE","AWOKE","COLD","AND CONFUSED","","A BIRD SPOKE","GUIDING US","CALLING OUR SLEEPY BODIES","INTO","THE CAVE","OF MYSTERY",".",".","WERE WE SLEEPING","?","??","???","OUR ATTENTION DRIFTED","LOWER INTO THE HILL", "THE SLOPE WAS TOO MUCH"];
+
+  textProp(screen, 4 - view, 8 - turn, story[turn%story.length], 200, 214, 255, 1);
 
 
 
@@ -639,8 +641,8 @@ var fontArt =
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00,	// Char 239 (.)
     0xFF, 0xFF, 0xFF, 0xE0, 0xE0, 0xE7, 0xE7, 0xE7,	// Char 240 (.)
     0xE7, 0xE7, 0xE7, 0x00, 0x00, 0xFF, 0xFF, 0xFF,	// Char 241 (.)
-    0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xE7, 0xE7, 0xE7,	// Char 242 (.)
     0xE7, 0xE7, 0xE7, 0x07, 0x07, 0xE7, 0xE7, 0xE7,	// Char 243 (.)
+    0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xE7, 0xE7, 0xE7,	// Char 242 (.)
     0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,	// Char 244 (.)
     0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F,	// Char 245 (.)
     0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8,	// Char 246 (.)
@@ -657,6 +659,9 @@ var fontArt =
 //};
 
 
+
+
+var font = fontArt;
 
 function drawString(screen, x, y, s, r, g, b, a) {
   for (var i = 0; i < s.length; i++) {

@@ -797,7 +797,9 @@ function textCenter(screen,x, y, s, r, g, b, a) {
     twSum = twSum + LR.R - LR.L + 1 + pad;
   }
   
-  tH = Math.floor(twSum/2);
+  var tH = Math.floor(twSum/2);
+
+  var wSum = 0;
 
   for (var i = 0; i < s.length; i++) {
 

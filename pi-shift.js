@@ -186,7 +186,7 @@ function Keyboarder() {
 
 function draw(screen, bodies) {
 
-  if ((turn % (H*2)) == 16) {
+  if ((turn % (H * 2)) == 16) {
     var r = Math.floor(Math.random() * 256);
     var g = Math.floor(Math.random() * 256);
     var b = Math.floor(Math.random() * 256);
@@ -198,9 +198,9 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  var story = ["WE","AWOKE","COLD","AND CONFUSED","","A BIRD SPOKE","GUIDING US","CALLING OUR SLEEPY BODIES","INTO","THE CAVE","OF MYSTERY",".",".","WERE WE SLEEPING","?","??","???","OUR ATTENTION DRIFTED","LOWER INTO THE HILL", "THE SLOPE WAS TOO MUCH"];
+  var story = ["WE", "AWOKE", "COLD", "AND CONFUSED", "", "A BIRD SPOKE", "GUIDING US", "CALLING OUR SLEEPY BODIES", "INTO", "THE CAVE", "OF MYSTERY", ".", ".", "WERE WE SLEEPING", "?", "??", "???", "OUR ATTENTION DRIFTED", "LOWER INTO THE HILL", "THE SLOPE WAS TOO MUCH"];
 
-  textProp(screen, 4 - view, 8 - turn, story[turn%story.length], 200, 214, 255, 1);
+  textProp(screen, 4 - view, 8 - turn, story[turn % story.length], 200, 214, 255, 1);
 
 
 

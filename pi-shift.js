@@ -1,15 +1,22 @@
 var W = 80;
 var H = 50;
 // Player e=energy
-var P = { e: 0 ,x:0,y:0};
+var P = { e: 0, x: 0, y: 0 };
 var turn = 0;
 var view = 0;
+var canvas = document.getElementById("pi-shift");
 function run() {
 
   var Blocks = new Array(W);
-  for (var i = 0; i < W; i++) Blocks[i] = -8;
+  var last = 8;
+  for (var i = 0; i < W; i++) {
+    var x = Math.floor(Math.random() * 3) - 1;
+    Blocks[i] = last + x;
+    last = last + x;
+  }
 
-  var canvas = document.getElementById("pi-shift");
+  P.y = Blocks[P.x];
+
 
   var screen = canvas.getContext('2d');
 
@@ -38,8 +45,8 @@ function gameUpdate(kb, blocks) {
   var denied = false;
   if (kb(KEYS.DOWN)) {
     if (!downLast) {
-      var dec = blocks[view] - 1;
-      blocks[view] = dec;
+      var dec = blocks[P.x] - 1;
+      blocks[P.x] = dec;
       P.y--;
       createOscillator(P.y, 1600);
       P.e = P.e + 1;
@@ -51,8 +58,8 @@ function gameUpdate(kb, blocks) {
 
   } else if (kb(KEYS.UP)) {
     if (!upLast) {
-      var inc = blocks[view] + 1;
-      blocks[view] = inc;
+      var inc = blocks[P.x] + 1;
+      blocks[P.x] = inc;
       P.y++;
       createOscillator(P.y, 1600);
       P.e = P.e - 1;
@@ -66,16 +73,16 @@ function gameUpdate(kb, blocks) {
   }
 
   if (kb(KEYS.LEFT)) {
-    var allowed = (blocks[vo(-1)] - blocks[view]) <= 1;
+    var allowed = (blocks[m(P.x - 1)] - blocks[P.x]) <= 1;
     if (!leftLast) {
       leftLast = true;
       rightLast = false;
       if (allowed) {
         //blocks = RotRev(blocks);
-        var lastHeight=blocks[view];
+        var lastHeight = blocks[P.x];
         view = vo(-1);
-        P.x--;
-        P.y+=blocks[view]-lastHeight;
+        P.x = m(P.x - 1);
+        P.y += blocks[P.x] - lastHeight;
         createOscillator(P.y, 1600);
         updated = true;
       } else {
@@ -84,16 +91,16 @@ function gameUpdate(kb, blocks) {
     }
 
   } else if (kb(KEYS.RIGHT)) {
-    var allowed = (blocks[vo(1)] - blocks[view]) <= 1;
+    var allowed = (blocks[m(P.x + 1)] - blocks[P.x]) <= 1;
     if (!rightLast) {
       rightLast = true;
       leftLast = false;
       if (allowed) {
         //blocks = Rot(blocks);
-        var lastHeight=blocks[view];
-        view =  vo(1);
-        P.x++;
-        P.y+=blocks[view]-lastHeight;
+        var lastHeight = blocks[P.x];
+        view = vo(1);
+        P.x = m(P.x + 1);
+        P.y += blocks[P.x] - lastHeight;
         createOscillator(P.y, 1600);
         updated = true;
       } else {
@@ -114,7 +121,11 @@ function gameUpdate(kb, blocks) {
 }
 //View offset
 function vo(o) {
-  return (o+W+view)%W;
+  return (o + W + view) % W;
+}
+//mod width
+function m(o) {
+  return (o + W) % W;
 }
 function Rot(arr) {
   arr.push(arr.shift());
@@ -128,42 +139,31 @@ function RotRev(arr) {
 
 var allKeys = [KEYS.UP, KEYS.DOWN, KEYS.LEFT, KEYS.RIGHT];
 
+var lclick, rclick, uclick, dclick = null;
+
 function Keyboarder() {
+
   var keyState = {};
 
-  window.left.onmousedown =function(e) {
-    keyState[KEYS.LEFT]=true;
-  }
+  lclick = function (e) {
+    keyState[KEYS.LEFT] = true;
+    setTimeout(function () { keyState[KEYS.LEFT] = false; }, 200);
+  };
 
-  window.left.onmouseup =function(e) {
-    keyState[KEYS.LEFT]=false;
-  }
+  rclick = function (e) {
+    keyState[KEYS.RIGHT] = true;
+    setTimeout(function () { keyState[KEYS.RIGHT] = false; }, 200);
+  };
 
-  window.right.onmousedown =function(e) {
-    keyState[KEYS.RIGHT]=true;
-  }
+  uclick = function (e) {
+    keyState[KEYS.UP] = true;
+    setTimeout(function () { keyState[KEYS.UP] = false; }, 200);
+  };
 
-  window.right.onmouseup =function(e) {
-    keyState[KEYS.RIGHT]=false;
-  }
-
-
-  window.up.onmousedown =function(e) {
-    keyState[KEYS.UP]=true;
-  }
-
-  window.up.onmouseup =function(e) {
-    keyState[KEYS.UP]=false;
-  }
-
-
-  window.down.onmousedown =function(e) {
-    keyState[KEYS.DOWN]=true;
-  }
-
-  window.down.onmouseup =function(e) {
-    keyState[KEYS.DOWN]=false;
-  }
+  dclick = function (e) {
+    keyState[KEYS.DOWN] = true;
+    setTimeout(function () { keyState[KEYS.DOWN] = false; }, 200);
+  };
 
 
   window.addEventListener('keydown', function (e) {
@@ -185,28 +185,64 @@ function Keyboarder() {
 
 
 function draw(screen, bodies) {
+
+  if ((turn % (H*2)) == 16) {
+    var r = Math.floor(Math.random() * 256);
+    var g = Math.floor(Math.random() * 256);
+    var b = Math.floor(Math.random() * 256);
+    canvas.style.backgroundColor = "rgba(" + r + "," + g + "," + b + ",1)";
+  }
   // Clear away the drawing from the previous tick.
   screen.clearRect(0, 0, W, H);
 
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  textProp(screen, 4 - view, 8-turn, "SO FAR AWAY", 200, 214, 255, 1);
+  textProp(screen, 4 - view, 8 - turn, "SO FAR AWAY", 200, 214, 255, 1);
+
+
+
+  var col = c(255, 255, 255, 1);
+
+  pixc(screen, m(WH + P.x - view), H - P.y - 2, col)
+
+  var r = Math.abs(P.e)
+
+  var j = 1;
+  while (r > 0) {
+    pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - j, col);
+    pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - j, col);
+
+    if ((r % 2) == 0) {
+      pixc(screen, m(WH + P.x - view), H - P.y - 2 - j, col);
+    } else {
+      if (P.e < 0) {
+        pix(screen, m(WH + P.x - view), H - P.y - 2 - j, 200, 100, 0, 1);
+      } else {
+        pix(screen, m(WH + P.x - view), H - P.y - 2 - j, 0, 100, 200, 1);
+      }
+    }
+    r = Math.floor(r / 2);
+    j++;
+  }
+
+  pixc(screen, m(WH + P.x - view), H - P.y - 2 - j, col);
+
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
-    drawRect(screen, bodies[i], vo(i+WH));
+    drawRect(screen, bodies[i], m(i + WH - view));
   }
-  pix(screen,WH+P.x-view,HH-P.y,0,255,255,1);
-  var abs = Math.abs(P.e);
-  var de = P.e > 0 ? 1 : -1;
-  for (var i = 0; Math.abs(i) < abs; i = i + de) {
-    if (de > 0) {
-      pix(screen, WH + i % 8, H - 2 - ~~(i / 8), 150, 255, 150, .7);
-    } else {
-      pix(screen, WH + i % 8, H - 2 + ~~(i / 8), 255, 150, 150, .7);
-    }
-  }
+
+  // var abs = Math.abs(P.e);
+  // var de = P.e > 0 ? 1 : -1;
+  // for (var i = 0; Math.abs(i) < abs; i = i + de) {
+  //   if (de > 0) {
+  //     pix(screen, WH + i % 8, H - 2 - ~~(i / 8), 150, 255, 150, .7);
+  //   } else {
+  //     pix(screen, WH + i % 8, H - 2 + ~~(i / 8), 255, 150, 150, .7);
+  //   }
+  // }
 
 };
 
@@ -239,23 +275,23 @@ var HH = H / 2;
 function drawRect(screen, b, idx) {
 
   //if (b !== 0) {
-  pix(screen, idx, HH - b, 100, 92, 95, 1);
+  pix(screen, idx, H - b - 1, 100, 92, 95, 1);
   //} else {
   //  pix(screen, idx, HH - b, 0, 0, 0, .1);
   //}
 
   if (idx === WH) {
     //pix(screen, idx, HH - b, 256, 0, 0, 1);
-    
+
     //pix(screen, idx, HH - b - 3, 240, 200, 200, 1);
     //pix(screen, idx, HH - b - 2, 120, 110, 180, 1);
     //pix(screen, idx, HH - b - 1, 220, 180, 180, 1);
   }
 
-  var fill = H-1;
-  while (fill > HH - b) {
-    pix(screen, idx, fill, 160, 114, 130, 1);
-    fill = fill - 1;
+  var fill = 0;
+  while (fill < b) {
+    pix(screen, idx, H - fill - 1, 160, 114, 130, 1);
+    fill = fill + 1;
   }
 };
 
@@ -263,6 +299,16 @@ function pix(screen, x, y, r, g, b, a) {
   screen.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
   screen.fillRect((W * 100 + x) % W, (H * 100 + y) % H, 1, 1);
 }
+
+function pixc(screen, x, y, c) {
+  screen.fillStyle = c;
+  screen.fillRect((W * 100 + x) % W, (H * 100 + y) % H, 1, 1);
+}
+
+function c(r, g, b, a) {
+  return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
+
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var audio = new AudioContext();

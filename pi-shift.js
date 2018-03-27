@@ -38,10 +38,10 @@ function gameUpdate(kb, blocks) {
   var denied = false;
   if (kb(KEYS.DOWN)) {
     if (!downLast) {
-      var dec = blocks[WH] - 1;
-      blocks[WH] = dec;
+      var dec = blocks[view] - 1;
+      blocks[view] = dec;
       P.y--;
-      createOscillator(dec, 1600);
+      createOscillator(P.Y, 1600);
       P.e = P.e + 1;
       updated = true;
     }
@@ -51,10 +51,10 @@ function gameUpdate(kb, blocks) {
 
   } else if (kb(KEYS.UP)) {
     if (!upLast) {
-      var inc = blocks[WH] + 1;
-      blocks[WH] = inc;
+      var inc = blocks[view] + 1;
+      blocks[view] = inc;
       P.y++;
-      createOscillator(inc, 1600);
+      createOscillator(P.y, 1600);
       P.e = P.e - 1;
       updated = true;
     }
@@ -66,15 +66,17 @@ function gameUpdate(kb, blocks) {
   }
 
   if (kb(KEYS.LEFT)) {
-    var allowed = (blocks[WH - 1] - blocks[WH]) <= 1;
+    var allowed = (blocks[vo(-1)] - blocks[view]) <= 1;
     if (!leftLast) {
       leftLast = true;
       rightLast = false;
       if (allowed) {
-        blocks = RotRev(blocks);
-        view = view - 1;
+        //blocks = RotRev(blocks);
+        var lastHeight=blocks[view];
+        view = vo(-1);
         P.x--;
-        createOscillator(blocks[WH], 1600);
+        P.y+=blocks[view]-lastHeight;
+        createOscillator(P.y, 1600);
         updated = true;
       } else {
         denied = true;
@@ -82,15 +84,17 @@ function gameUpdate(kb, blocks) {
     }
 
   } else if (kb(KEYS.RIGHT)) {
-    var allowed = (blocks[WH + 1] - blocks[WH]) <= 1;
+    var allowed = (blocks[vo(1)] - blocks[view]) <= 1;
     if (!rightLast) {
       rightLast = true;
       leftLast = false;
       if (allowed) {
-        blocks = Rot(blocks);
-        view = view + 1;
+        //blocks = Rot(blocks);
+        var lastHeight=blocks[view];
+        view =  vo(1);
         P.x++;
-        createOscillator(blocks[WH], 1600);
+        P.y+=blocks[view]-lastHeight;
+        createOscillator(P.y, 1600);
         updated = true;
       } else {
         denied = true;
@@ -108,7 +112,10 @@ function gameUpdate(kb, blocks) {
 
   return { updated: updated, blocks: blocks };
 }
-
+//View offset
+function vo(o) {
+  return (o+W+view)%W;
+}
 function Rot(arr) {
   arr.push(arr.shift());
   return arr;
@@ -188,9 +195,9 @@ function draw(screen, bodies) {
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
-    drawRect(screen, bodies[i], i);
+    drawRect(screen, bodies[i], vo(i+WH));
   }
-  pix(screen,WH+P.x,HH-P.y,0,255,255,1);
+  pix(screen,WH+P.x-view,HH-P.y,0,255,255,1);
   var abs = Math.abs(P.e);
   var de = P.e > 0 ? 1 : -1;
   for (var i = 0; Math.abs(i) < abs; i = i + de) {
@@ -238,7 +245,8 @@ function drawRect(screen, b, idx) {
   //}
 
   if (idx === WH) {
-    pix(screen, idx, HH - b, 256, 0, 0, 1);
+    //pix(screen, idx, HH - b, 256, 0, 0, 1);
+    
     //pix(screen, idx, HH - b - 3, 240, 200, 200, 1);
     //pix(screen, idx, HH - b - 2, 120, 110, 180, 1);
     //pix(screen, idx, HH - b - 1, 220, 180, 180, 1);

@@ -10,7 +10,7 @@
       height: auto;
       object-fit: contain;
       border: 32px solid #4a4a4c;
-      border-bottom-width: 96px;
+
       box-sizing: border-box;
       image-rendering: pixelated;
       display: block;
@@ -51,8 +51,25 @@
       padding: 32px;
       display: block;
     }
-    .fr{
-      float:right;
+
+    .fr {
+      float: right;
+    }
+
+    button {
+      font-size: 5vw;
+      min-width: 20vw;
+      min-height: 6vw;
+      user-select: none;
+      /* display: inline-block; */
+    }
+
+    div.buttons {
+      background-color: #4a4a4c;
+      display: inline-block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 27px 32px 32px;
     }
   </style>
 </head>
@@ -61,29 +78,31 @@
 
 
   <canvas id="pi-shift"></canvas>
-  <div>
-    <button id=left onclick="lclick();">Left</button>
-    <button id=right>Right</button>
+  <div class=buttons>
+    <button id=left onclick="lclick();">Left</button><button id=right  onclick="rclick();">Right</button>
     <div class=fr>
-      <button id=up>up</button>
+      <button id=up  onclick="uclick();">up</button>
       <br>
-      <button id=down>down</button>
+      <button id=down  onclick="dclick();">down</button>
     </div>
   </div>
   <page>
     <title>the slopes of a town by the sea</title>
-    <author>
-      <a href='https://williamsharkey.com'>William Edwin Sharkey</a>
-    </author>
 
 
     <p>
       Move with the arrow keys.
-      <br>Left and Right to shift.
-      <br>Up and Down to move box.
+      <br>Left and Right to move.
+      <br>Up and Down to Build or Dig.
       <br>
-      <a href=''>Refresh</a> to play again.
+      <a href=''>Refresh</a> to begin again.
     </p>
+
+    <author>
+      by
+      <a href='https://williamsharkey.com'>William Edwin Sharkey</a>
+    </author>
+
   </page>
   <script src="pi-shift.js"></script>
 </body>

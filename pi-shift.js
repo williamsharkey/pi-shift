@@ -391,7 +391,7 @@ window.addEventListener('load', run);
 
 
 
-var font =
+var fontArt =
   // Font: ahoy_art_deco.64c
 
   //unsigned char font[2048] =
@@ -655,6 +655,8 @@ var font =
     0x0F, 0x0F, 0x0F, 0x0F, 0xF0, 0xF0, 0xF0, 0xF0	// Char 255 (.)
   ];
 //};
+
+
 
 function drawString(screen, x, y, s, r, g, b, a) {
   for (var i = 0; i < s.length; i++) {

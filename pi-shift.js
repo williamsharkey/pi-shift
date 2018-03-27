@@ -200,10 +200,10 @@ function Keyboarder() {
 
 function draw(screen, bodies) {
 
-  if ((turn % (H * 2)) == 16) {
-    var r = Math.floor(Math.random() * 256);
-    var g = Math.floor(Math.random() * 256);
-    var b = Math.floor(Math.random() * 256);
+  if ((turn % (H * 1)) == 16) {
+    var r = Math.floor(Math.random() * 255);
+    var g = Math.floor(Math.random() * 150);
+    var b = Math.floor(Math.random() * 206);
     canvas.style.backgroundColor = "rgba(" + r + "," + g + "," + b + ",1)";
   }
   // Clear away the drawing from the previous tick.
@@ -212,7 +212,7 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "   !!!", "AWAKENED", "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS", "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF", "THE EAST", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS", "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO", "  THE CAVE  ", " (THE CAVE) ", "((        ))", "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD", "CRUMBLED"];
+  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "   !!!", "AWAKENED", "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS", "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF", "THE EAST","     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS", "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "FOLLOW MY","  EVERY","INSTRUCTION"," WITH CARE","     ..OR","A THICK TAR","WILL POUR","OVER EVERY", "METALIC PART","OF YOUR","MOTHERBOARD"," <<    >>", " << CAWW >>" ,"HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO", "  THE CAVE  ","OPENING BELOW", " (THE CAVE) ", "((        ))", "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD", "CRUMBLED"];
 
   textProp(screen, 2, 8, story[Math.floor(turn / 3) % story.length], 200, 214, 255, 1);
 

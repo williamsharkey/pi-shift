@@ -38,7 +38,7 @@ var rightLast = false;
 var upLast = false;
 var downLast = false;
 //var scale = [0, 1, 3, 5, 7, 8, 10];
-var scale = [-2,-4.5,4.5,-12,-5,-4.5,0,11.5,9.5];
+var scale = [-2, -4.5, 4.5, -12, -5, -4.5, 0, 11.5, 9.5];
 
 //var scale = [0, -2, 12, 19, 5, 4, 0, 7, 9];
 var sl = scale.length;
@@ -214,9 +214,22 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "!!!", "AWAKENED", "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS", "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF", "THE EAST","     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS", "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "FOLLOW MY","  EVERY","INSTRUCTION"," WITH CARE","     ..OR","A THICK TAR","WILL POUR","OVER EVERY", "METALIC PART","OF YOUR","MOTHERBOARD"," <<    >>", " << CAWW >>" ,"HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO", "  THE CAVE  ","OPENING BELOW", " (THE CAVE) ", "((        ))", "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD", "CRUMBLED"];
+  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "!!!", "AWAKENED",
+    "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS",
+    "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS",
+    " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF",
+    "THE EAST", "     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS",
+    "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "FOLLOW MY", "  EVERY",
+    "INSTRUCTION", " WITH CARE", "    ..OR", "A THICK TAR", "WILL POUR",
+    "OVER EVERY", "METALIC PART", "OF YOUR", "MOTHERBOARD", "<<    >>",
+    " << CAWW >>", "HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO",
+    "  THE CAVE  ", "OPENING BELOW", " (THE CAVE) ", "((        ))",
+    "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?",
+    "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL",
+    "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD",
+    "CRUMBLED"];
 
-  textCenter(screen, 2, WH, story[Math.floor(turn / 3) % story.length], 200, 214, 255, 1);
+  textCenter(screen, WH, 8, story[Math.floor(turn / 5) % story.length], 200, 214, 255, 1);
 
 
 
@@ -315,17 +328,17 @@ function drawRect(screen, b, idx) {
 
 function pix(screen, x, y, r, g, b, a) {
 
-  if(x<0||y<0||x>=W||y>=H) return;
+  if (x < 0 || y < 0 || x >= W || y >= H) return;
 
   screen.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
-  screen.fillRect( x,  y, 1, 1);
+  screen.fillRect(x, y, 1, 1);
 }
 
 function pixc(screen, x, y, c) {
-  if(x<0||y<0||x>=W||y>=H) return;
+  if (x < 0 || y < 0 || x >= W || y >= H) return;
 
   screen.fillStyle = c;
-  screen.fillRect( x,  y, 1, 1);
+  screen.fillRect(x, y, 1, 1);
 }
 
 function c(r, g, b, a) {
@@ -743,7 +756,7 @@ function letterLR(letter) {
     ;
 
   if (mask == 0) {
-    return { L: 0, R: 5, mask: mask };
+    return { L: 0, R: 3, mask: mask };
   }
   var L = 0;
   for (var i = 0; i < 7; i++) {
@@ -787,7 +800,7 @@ function textProp(screen, x, y, s, r, g, b, a) {
 }
 
 
-function textCenter(screen,x, y, s, r, g, b, a) {
+function textCenter(screen, x, y, s, r, g, b, a) {
 
   const pad = 1;
   var twSum = 0;
@@ -796,8 +809,8 @@ function textCenter(screen,x, y, s, r, g, b, a) {
     var LR = letterLR(letter);
     twSum = twSum + LR.R - LR.L + 1 + pad;
   }
-  
-  var tH = Math.floor(twSum/2);
+
+  var tH = Math.floor(twSum / 2);
 
   var wSum = 0;
 
@@ -813,10 +826,11 @@ function textCenter(screen,x, y, s, r, g, b, a) {
 
       for (var place = 0; place <= 7; place++) {
         if (c & 0x80 >> place) {
-          pix(screen, x + wSum + place - LR.L-tH, y + line, r, g, b, a);
+          pix(screen, x + wSum + place - LR.L - tH, y + line, r, g, b, a);
         }
       }
     }
+    wSum = wSum + LR.R - LR.L + 1 + pad;
 
   }
 }

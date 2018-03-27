@@ -37,7 +37,9 @@ var leftLast = false;
 var rightLast = false;
 var upLast = false;
 var downLast = false;
-var scale = [0, 1, 3, 5, 7, 8, 10];
+//var scale = [0, 1, 3, 5, 7, 8, 10];
+var scale = [-2,-4.5,4.5,-12,-5,-4.5,0,11.5,9.5];
+
 //var scale = [0, -2, 12, 19, 5, 4, 0, 7, 9];
 var sl = scale.length;
 function gameUpdate(kb, blocks) {
@@ -212,9 +214,9 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "   !!!", "AWAKENED", "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS", "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF", "THE EAST","     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS", "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "FOLLOW MY","  EVERY","INSTRUCTION"," WITH CARE","     ..OR","A THICK TAR","WILL POUR","OVER EVERY", "METALIC PART","OF YOUR","MOTHERBOARD"," <<    >>", " << CAWW >>" ,"HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO", "  THE CAVE  ","OPENING BELOW", " (THE CAVE) ", "((        ))", "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD", "CRUMBLED"];
+  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "!!!", "AWAKENED", "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS", "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS", " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF", "THE EAST","     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS", "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "FOLLOW MY","  EVERY","INSTRUCTION"," WITH CARE","     ..OR","A THICK TAR","WILL POUR","OVER EVERY", "METALIC PART","OF YOUR","MOTHERBOARD"," <<    >>", " << CAWW >>" ,"HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO", "  THE CAVE  ","OPENING BELOW", " (THE CAVE) ", "((        ))", "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?", "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL", "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD", "CRUMBLED"];
 
-  textProp(screen, 2, 8, story[Math.floor(turn / 3) % story.length], 200, 214, 255, 1);
+  textCenter(screen, 2, WH, story[Math.floor(turn / 3) % story.length], 200, 214, 255, 1);
 
 
 
@@ -780,12 +782,39 @@ function textProp(screen, x, y, s, r, g, b, a) {
         }
       }
     }
-
-    //console.log(letter + " " + LR.L + " " + LR.R);
-    //char bound box
-    //pix(screen, x + wSum, y, 255, 0, 0, 1);
-    //pix(screen, x + wSum + LR.R - LR.L, y + 1, 0, 255, 0, 1);
-
     wSum = wSum + LR.R - LR.L + 1 + pad;
+  }
+}
+
+
+function textCenter(screen,x, y, s, r, g, b, a) {
+
+  const pad = 1;
+  var twSum = 0;
+  for (var i = 0; i < s.length; i++) {
+    var letter = s[i];
+    var LR = letterLR(letter);
+    twSum = twSum + LR.R - LR.L + 1 + pad;
+  }
+  
+  tH = Math.floor(twSum/2);
+
+  for (var i = 0; i < s.length; i++) {
+
+    var letter = s[i];
+    var charCode = letter.charCodeAt(0);
+    var LR = letterLR(letter);
+
+    for (line = 0; line < 8; line++) {
+
+      var c = font[charCode * 8 + line];
+
+      for (var place = 0; place <= 7; place++) {
+        if (c & 0x80 >> place) {
+          pix(screen, x + wSum + place - LR.L-tH, y + line, r, g, b, a);
+        }
+      }
+    }
+
   }
 }

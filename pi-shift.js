@@ -123,6 +123,42 @@ var allKeys = [KEYS.UP, KEYS.DOWN, KEYS.LEFT, KEYS.RIGHT];
 
 function Keyboarder() {
   var keyState = {};
+
+  window.left.onmousedown =function(e) {
+    keyState[KEYS.LEFT]=true;
+  }
+
+  window.left.onmouseup =function(e) {
+    keyState[KEYS.LEFT]=false;
+  }
+
+  window.right.onmousedown =function(e) {
+    keyState[KEYS.RIGHT]=true;
+  }
+
+  window.right.onmouseup =function(e) {
+    keyState[KEYS.RIGHT]=false;
+  }
+
+
+  window.up.onmousedown =function(e) {
+    keyState[KEYS.UP]=true;
+  }
+
+  window.up.onmouseup =function(e) {
+    keyState[KEYS.UP]=false;
+  }
+
+
+  window.down.onmousedown =function(e) {
+    keyState[KEYS.DOWN]=true;
+  }
+
+  window.down.onmouseup =function(e) {
+    keyState[KEYS.DOWN]=false;
+  }
+
+
   window.addEventListener('keydown', function (e) {
     keyState[e.keyCode] = true;
     if (allKeys.indexOf(e.keyCode) != -1) {

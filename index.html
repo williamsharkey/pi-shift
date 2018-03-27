@@ -2,27 +2,26 @@
 <html>
 
 <head>
-  <title>Pi Shift</title>
+  <title>the slopes of a town by the sea</title>
   <style>
     canvas {
       background: #e9e3ff;
-      width: 800px;
-      height: 500px;
+      width: 100%;
+      height: auto;
       object-fit: contain;
-      box-shadow: 0px 0px 0px 8px #4a4a4c;
+      border: 32px solid #4a4a4c;
+      border-bottom-width: 96px;
+      box-sizing: border-box;
       image-rendering: pixelated;
       display: block;
-      margin: 32px auto;
       transition: background-color 7s;
     }
 
     body {
       font-family: sans-serif;
       line-height: 1.26em;
-      width: 680px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 10px 0 10px;
+
+      margin: 0;
       color: #cecece;
       background: #545067;
     }
@@ -40,39 +39,44 @@
       font-size: 11pt;
     }
 
-    .header {
-      text-align: center;
+    title {
+      display: block;
+      font-size: 2em;
+      font-weight: bold;
+      margin-top: 1em;
+      margin-bottom: 1em;
     }
 
-    .info,
-    .footer {
-      width: 528px;
-      margin: 0 auto;
+    page {
+      padding: 32px;
+      display: block;
     }
-
-    .footer {
-      border-top: 8px solid #4a4a4c;
-      margin-top: 32px;
-      padding-top: 32px;
-      text-align: center;
-    }
-
-    .info p {
-      margin-left: 32px;
+    .fr{
+      float:right;
     }
   </style>
 </head>
 
 <body>
-  <div class="header">
-    <h1>Pi Shift</h1>
-    <div class="strapline">numbers as stacks of boxes to be shifted</div>
-  </div>
 
+
+  <canvas id="pi-shift"></canvas>
   <div>
-    <canvas id="pi-shift"></canvas>
+    <button id=left>Left</button>
+    <button id=right>Right</button>
+    <div class=fr>
+      <button id=up>up</button>
+      <br>
+      <button id=down>down</button>
+    </div>
   </div>
-  <div class='info'>
+  <page>
+    <title>the slopes of a town by the sea</title>
+    <author>
+      <a href='https://williamsharkey.com'>William Edwin Sharkey</a>
+    </author>
+
+
     <p>
       Move with the arrow keys.
       <br>Left and Right to shift.
@@ -80,10 +84,7 @@
       <br>
       <a href=''>Refresh</a> to play again.
     </p>
-  </div>
-  <div class="footer">
-    <a href='https://williamsharkey.com'>William Sharkey</a>
-  </div>
+  </page>
   <script src="pi-shift.js"></script>
 </body>
 

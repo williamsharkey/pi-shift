@@ -1,10 +1,19 @@
 var W = 80;
 var H = 50;
-// Player e=energy
 var P = { e: 0, x: 0, y: 0 };
 var turn = 0;
 var view = 0;
 var canvas = document.getElementById("pi-shift");
+
+function bg(m) {
+  var x = getComputedStyle(canvas).backgroundColor.replace("rgb(", "").replace(")", "").split(",");
+  return "rgba(" + clean(x[0] * m) + "," + clean(x[1] * m) + "," + clean(x[2] * m) + ",1)";
+}
+
+function clean(x) {
+  return Math.floor(Math.max(0, Math.min(255, x)));
+}
+
 function run() {
 
   var Blocks = new Array(W);
@@ -38,7 +47,7 @@ var rightLast = false;
 var upLast = false;
 var downLast = false;
 //var scale = [0, 1, 3, 5, 7, 8, 10];
-var scale = [-2, -4.5, 4.5, -12, -5, -4.5, 0, 11.5, 9.5];
+var scale = [-12, -8.5, -18.5, -22];
 
 //var scale = [0, -2, 12, 19, 5, 4, 0, 7, 9];
 var sl = scale.length;
@@ -214,56 +223,160 @@ function draw(screen, bodies) {
   //drawString(screen, 0, 8, "PI SHIFT", 160, 114, 130, .5);
   //drawString(screen, 0, 8, "   " + turn, 160, 114, 130, .5);
   //drawString(screen, 0, 8, "HELLO WORLD 123", 160, 114, 130, 1);
-  var story = ["", "BEHOLD", "THE OLD", "DUSTY BOT", "", "", "!!!", "AWAKENED",
-    "ONCE MORE", "", "CIRCUITS", "CHIRPING", "AND COLD", "BLINKY LEDS",
-    "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS",
-    " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF",
-    "THE EAST", "     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS",
-    "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>", "FOLLOW MY", "  EVERY",
-    "INSTRUCTION", " WITH CARE", "    ..OR", "A THICK TAR", "WILL POUR",
-    "OVER EVERY", "METALIC PART", "OF YOUR", "MOTHERBOARD", "<<    >>",
-    " << CAWW >>", "HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO",
-    "  THE CAVE  ", "OPENING BELOW", " (THE CAVE) ", "((        ))",
-    "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?",
-    "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL",
-    "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD",
-    "CRUMBLED"];
+  var story = `
+BEHOLD
+THE OLD
+DUSTY BOT
+  
+ 
+!!!
+AWAKENED
+ONCE MORE
 
-  textCenter(screen, WH, 8, story[Math.floor(turn / 5) % story.length], 200, 214, 255, 1);
+CIRCUITS
+CHIRPING
+
+LUMINESCENT
+L.E.D.S BLINK
+IN COLD AIR
+REMINDING YOU
+OF THE FACTORY
+WHERE I WAS
+ASSEMBLED
+
+LOOK AT MY
+CPU
+A TACHIMA-307
+MADE IN JAPAN
+YEAR 2082
+MONTH 3
+REV 3
+I COULD FEEL
+THE CPU WAS
+CONFUSED AND
+WARM
+
+...
+???
+...
+
+A VICIOUS
+BIRD SPEAKS
+<<CAWW>>
+DEAR BOT
+IT IS I
+VERMUNA
+BIRD OF
+THE EAST
+
+I WILL BE
+YOUR GUIDE
+WITH BLACK
+WINGS
+GOLDEN RING
+ORANGE CLAWS
+SHARP BEAK
+<<CAWW>>
+
+YOU MUST FOLLOW
+MY EVERY
+INSTRUCTION
+WITH CARE
+..OR
+A THICK TAR
+WILL POUR
+BETWEEN EVERY
+METALLIC WIRE
+OVER YOUR OLD
+MOTHERBOARD
+
+NOW YOU
+DREADFUL, DUSTY
+BOT
+CARRY THAT
+ROUND ROCK
+INTO THE CAVE
+
+/////////////////
+//A SPOOKY CAVE//
+// OPENS BELOW //
+/////////////////
 
 
 
-  var col = c(255, 255, 255, 1);
 
-  pixc(screen, m(WH + P.x - view), H - P.y - 2, col)
 
-  var r = Math.abs(P.e)
+`.split('\n');
 
-  var j = 1;
-  while (r > 0) {
-    pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - j, col);
-    pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - j, col);
+  //     "PULSING", "THE CPU", "WAS CONFUSED", "...", "A", "VICIOUS",
+  //     " BIRD SPOKE", "<<CAWW>>", " *DEAR BOT* ", "IT IS I", "VERMUNA", "BIRD OF",
+  //     "THE EAST", "     .", "I WILL BE", "YOUR GUIDE", "WITH BLACK", " WINGS",
+  //     "SHARP BEAK", "AND WIREY", "ORANGE FEET", "<<CAWW>>","", "FOLLOW MY", "  EVERY",
+  //     "INSTRUCTION", " WITH CARE", "    ..OR", "A THICK TAR", "WILL POUR",
+  //     "OVER EVERY", "METALIC PART", "OF YOUR", "MOTHERBOARD", "<<    >>",
+  //     " << CAWW >>", "HEY YOU BOT!", "CARRY THAT", "ROUND ROCK", "INTO",
+  //     "  THE CAVE  ", "OPENING BELOW", " (THE CAVE) ", "((        ))",
+  //     "OF MYSTERY", ".", ".", "WERE WE", "SLEEPING", "?", "DREAMING?",
+  //     "???", "OUR ATTENTION", "DRIFTED", "SLOWLY LOWER", "INTO THE HILL",
+  //     "THE SLOPE WAS", "TOO MUCH.", "*", "DIRTY ROCKS", "SLID AND SOD",
+  //     "CRUMBLED"];
 
-    if ((r % 2) == 0) {
-      pixc(screen, m(WH + P.x - view), H - P.y - 2 - j, col);
-    } else {
-      if (P.e < 0) {
-        pix(screen, m(WH + P.x - view), H - P.y - 2 - j, 200, 100, 0, 1);
-      } else {
-        pix(screen, m(WH + P.x - view), H - P.y - 2 - j, 0, 100, 200, 1);
-      }
-    }
-    r = Math.floor(r / 2);
-    j++;
-  }
-
-  pixc(screen, m(WH + P.x - view), H - P.y - 2 - j, col);
+  textCenter(screen, WH, 8, story[Math.floor(turn / 5) % story.length], bg(1.4));
 
 
   // Draw each body as a rectangle.
   for (var i = 0; i < bodies.length; i++) {
     drawRect(screen, bodies[i], m(i + WH - view));
   }
+
+
+
+  var col = bg(1.9);
+  //var col = c(255, 255, 255, 1);
+  var body = 6;
+  var bodyCol = bg(1.8);
+
+  pixc(screen, m(WH + P.x - view), H - P.y - 2 - body, col)
+
+  for (var b = 0; b < body; b++) {
+    pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - b, bodyCol);
+    pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - b, bodyCol);
+  }
+
+
+  // pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - body + 1, bodyCol);
+  // pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - body + 2, bodyCol);
+  // pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - body + 3, bodyCol);
+  // pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - body + 1, bodyCol);
+  // pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - body + 2, bodyCol);
+  // pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - body + 3, bodyCol);
+
+  var r = Math.abs(P.e)
+
+  var j = 1;
+  while (r > 0) {
+    pixc(screen, m(WH + P.x - view - 1), H - P.y - 2 - j - body, col);
+    pixc(screen, m(WH + P.x - view + 1), H - P.y - 2 - j - body, col);
+
+    if ((r % 2) == 0) {
+      pixc(screen, m(WH + P.x - view), H - P.y - 2 - j - body, col);
+    } else {
+      if (P.e < 0) {
+        pixc(screen, m(WH + P.x - view), H - P.y - 2 - j - body, bg(.3));
+      } else {
+        pix(screen, m(WH + P.x - view), H - P.y - 2 - j - body, bg(.3));
+      }
+    }
+    r = Math.floor(r / 2);
+    j++;
+  }
+
+  pixc(screen, m(WH + P.x - view), H - P.y - 2 - j - body, col);
+
+
+
+
+
 
   // var abs = Math.abs(P.e);
   // var de = P.e > 0 ? 1 : -1;
@@ -306,7 +419,7 @@ var HH = H / 2;
 function drawRect(screen, b, idx) {
 
   //if (b !== 0) {
-  pix(screen, idx, H - b - 1, 100, 92, 95, 1);
+  pixc(screen, idx, H - b - 1, bg(.5));
   //} else {
   //  pix(screen, idx, HH - b, 0, 0, 0, .1);
   //}
@@ -321,7 +434,7 @@ function drawRect(screen, b, idx) {
 
   var fill = 0;
   while (fill < b) {
-    pix(screen, idx, H - fill - 1, 160, 114, 130, 1);
+    pixc(screen, idx, H - fill - 1, bg(.7));
     fill = fill + 1;
   }
 };
@@ -336,7 +449,6 @@ function pix(screen, x, y, r, g, b, a) {
 
 function pixc(screen, x, y, c) {
   if (x < 0 || y < 0 || x >= W || y >= H) return;
-
   screen.fillStyle = c;
   screen.fillRect(x, y, 1, 1);
 }
@@ -800,7 +912,7 @@ function textProp(screen, x, y, s, r, g, b, a) {
 }
 
 
-function textCenter(screen, x, y, s, r, g, b, a) {
+function textCenter(screen, x, y, s, color) {
 
   const pad = 1;
   var twSum = 0;
@@ -826,7 +938,7 @@ function textCenter(screen, x, y, s, r, g, b, a) {
 
       for (var place = 0; place <= 7; place++) {
         if (c & 0x80 >> place) {
-          pix(screen, x + wSum + place - LR.L - tH, y + line, r, g, b, a);
+          pixc(screen, x + wSum + place - LR.L - tH, y + line, color);
         }
       }
     }
